@@ -54,7 +54,9 @@ public class GalleryViewModel extends ViewModel {
         return mTickets;
     }
 
-    public void addTicket(Ticket ticket){
-        ticketReference.child(ticket.getId()).setValue(ticket);
+    public void deleteTicket(Ticket ticket){
+        ticketReference.child(ticket.getId()).removeValue();
     }
+
+
 }

@@ -3,25 +3,26 @@ package com.example.cinemaapp.ui.gallery;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.cinemaapp.R;
 import com.example.cinemaapp.model.Ticket;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 
-public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketViewHolder>{
+public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketViewHolder> {
 
-    private List<Ticket> tickets;
+    private final List<Ticket> tickets;
+    private GalleryViewModel galleryViewModel;
 
-    public TicketAdapter(List<Ticket> tickets) {
+    public TicketAdapter(List<Ticket> tickets, GalleryViewModel galleryViewModel) {
         this.tickets = tickets;
+        this.galleryViewModel = galleryViewModel;
     }
 
     @NonNull
@@ -39,6 +40,7 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketView
         }
         holder.txtMovieName.setText(ticket.getMovieName());
         holder.txtTicketTime.setText(ticket.getTime());
+        holder.btnDelete.setOnClickListener(v -> galleryViewModel.deleteTicket(ticket));
     }
 
     @Override
@@ -50,11 +52,13 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketView
 
         private final TextView txtMovieName;
         private final TextView txtTicketTime;
+        private final Button btnDelete;
 
         public TicketViewHolder(@NonNull View itemView) {
             super(itemView);
             txtMovieName = itemView.findViewById(R.id.ticket_movie_name);
             txtTicketTime = itemView.findViewById(R.id.ticket_time);
+            btnDelete = itemView.findViewById(R.id.btn_delete);
         }
     }
 }

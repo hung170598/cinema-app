@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -41,7 +40,7 @@ public class GalleryFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
         ticketRcv.setLayoutManager(linearLayoutManager);
         galleryViewModel.getTickets().observe(getViewLifecycleOwner(), tickets -> {
-            TicketAdapter ticketAdapter = new TicketAdapter(tickets);
+            TicketAdapter ticketAdapter = new TicketAdapter(tickets, galleryViewModel);
             ticketRcv.setAdapter(ticketAdapter);
         });
     }
