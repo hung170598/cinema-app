@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -84,7 +85,12 @@ public class SlideshowFragment extends Fragment {
         Button btnBookNow = binding.btnBookNow;
         btnBookNow.setOnClickListener(v -> {
             Log.d("Click Btn", "Booking");
-            slideshowViewModel.bookCurrentMovie();
+            boolean bookStatus = slideshowViewModel.bookCurrentMovie();
+            if(bookStatus){
+                Toast.makeText(this.getContext(), "Đăng ký vé xem phim thành công!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this.getContext(), "Đăng ký vé xem phim thất bại!", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 }

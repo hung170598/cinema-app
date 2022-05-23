@@ -8,15 +8,19 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.cinemaapp.model.Movie;
+import com.example.cinemaapp.model.Ticket;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 public class SlideshowViewModel extends ViewModel {
 
@@ -24,9 +28,12 @@ public class SlideshowViewModel extends ViewModel {
     private final MutableLiveData<List<Movie>> mMovies;
     private final MutableLiveData<Movie> mCurrentMovie;
     private final DatabaseReference moviesReference;
+    private final DatabaseReference ticketReference;
 
     public SlideshowViewModel() {
-        moviesReference = FirebaseDatabase.getInstance("https://thuncinemaapp-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("movies");
+        FirebaseDatabase database = FirebaseDatabase.getInstance("https://thuncinemaapp-default-rtdb.asia-southeast1.firebasedatabase.app/");
+        moviesReference = database.getReference("movies");
+        ticketReference = database.getReference("tickets");
 
         mMovies = new MutableLiveData<>();
         mCurrentMovie = new MutableLiveData<>();
@@ -57,20 +64,25 @@ public class SlideshowViewModel extends ViewModel {
         return mMovies;
     }
 
-    public LiveData<Movie> getCurrentMovie(){
+    public LiveData<Movie> getCurrentMovie() {
         return mCurrentMovie;
     }
 
-    public void setCurrentMovie(Movie movie){
+    public void setCurrentMovie(Movie movie) {
         mCurrentMovie.setValue(movie);
     }
 
-    public boolean bookCurrentMovie(){
+    public boolean bookCurrentMovie() {
         Movie currentMovie = mCurrentMovie.getValue();
-        if(Objects.isNull(currentMovie)) return false;
-        if(currentMovie.getCurrentSlot() >= currentMovie.getMaxSlot()) return false;
+        if (Objects.isNull(currentMovie)) return false;
+        if (currentMovie.getCurrentSlot() >= currentMovie.getMaxSlot()) return false;
         currentMovie.setCurrentSlot(currentMovie.getCurrentSlot() + 1);
         moviesReference.child(String.valueOf(currentMovie.getId())).setValue(currentMovie);
+        Ticket ticket = new Ticket(
+                UUID.randomUUID().toString(),
+                currentMovie.getName(),
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+        ticketReference.child(ticket.getId()).setValue(ticket);
         return true;
     }
 
